@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using TareaCorta1.Monitoreo;
 using TareaCorta1.Configuracion;
@@ -28,7 +28,15 @@ namespace TareaCorta1.Core
                 throw new Exception("No se ha configurado la carpeta sincronizada.");
 
             if (!Directory.Exists(_config.RutaCarpetaSincronizada))
-                throw new Exception("La carpeta sincronizada no existe.");
+            {
+                Exception ex = new DirectoryNotFoundException(
+                    $"La carpeta sincronizada no existe: {_config.RutaCarpetaSincronizada}"
+                );
+
+                Logger.RegistrarError(ex);
+                throw ex;
+            }
+
 
             _monitor = new MonitorCarpeta(_config.RutaCarpetaSincronizada);
             _gestor = new GestorArchivos(_config.Equipos);
@@ -57,3 +65,4 @@ namespace TareaCorta1.Core
         public bool EstaActivo() => _activo;
     }
 }
+
